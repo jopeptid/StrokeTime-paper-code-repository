@@ -1,8 +1,8 @@
 # ==============================================================================
-# Script Name: reconstruct_StrokeTime_Seurat_objects_from_GSE337349_submission.R
-# Purpose:     reconstructs the StrokeTime Seurat objects from GSE337349 submission rds files
+# Script Name:  reconstruct_StrokeTime_Seurat_objects_from_GSE337349_submission.R
+# Purpose:      reconstructs the StrokeTime Seurat objects from GSE337349 submission rds files
 #
-# Inputs:      StrokeTime_raw_count_matrix.rds, StrokeTime_metadata.rds
+# Inputs:       StrokeTime_raw_count_matrix.rds, StrokeTime_metadata.rds
 #
 # Dependencies: pacman, Seurat, patchwork, tidyverse, dittoSeq
 #

@@ -5,8 +5,8 @@
 # Inputs:       Cellranger raw_feature_bc_matrix.h5 file
 #               Table S1. StrokeTime sample characteristics.xlsx
 #
-# Dependencies: Seurat, harmony, singleCellTK, scuttle, data.table, dittoSeq, DoubletFinder,
-#               cowplot, patchwork, gridExtra, RColorBrewer, tidyverse, readxl
+# Dependencies: pacman, Seurat, qs2, harmony, singleCellTK, scuttle, data.table, dittoSeq, 
+#               DoubletFinder, cowplot, patchwork, gridExtra, RColorBrewer, tidyverse, readxl
 #
 # Hardware:     > 16GB free RAM recommended
 # ==============================================================================
@@ -40,9 +40,7 @@ SubsetGenesV5 <- function(seu) {
 file_path = '/path/to/the/working/directory/containing h5 files'
 myN = 'repository.ID of the study'  # e.g. GSE267240
 meta_file = "/path/to/Table S1. StrokeTime sample characteristics.xlsx"
-
 cellranger_out = 'path/to/the/top/cellranger/directory'
-cellranger_out = paste0("/media/zucca/GSM_dump/",myN)
 
 setwd(file_path)
 getwd()
@@ -181,7 +179,7 @@ for (i in 1:length(obj.lst)) {
   # print the sample we are on
   obj <- obj.lst[[i]]
   cat("\n",names(obj.lst[i]),"\n")
-  DefaultAssay(obj) = "RNA" 
+  DefaultAssay(obj) <- "RNA" 
   obj <- DietSeurat(obj, assays = "RNA", layers = "counts")
   
   # Pre-process seurat object with standard seurat workflow

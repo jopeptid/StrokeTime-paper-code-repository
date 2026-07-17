@@ -6,7 +6,7 @@
 # Inputs:       Seurat object "GSE337349_StrokeTime.rds"
 #               Table S1. StrokeTime sample characteristics.xlsx
 #
-# Dependencies: Seurat, patchwork, gridExtra, readxl, BiocParallel,
+# Dependencies: pacman, Seurat, patchwork, gridExtra, readxl, BiocParallel,
 #               ggplotify, ggsci, ggthemes, cowplot, patchwork, ggsankey,
 #               tidyverse, scater, batchelor, scran, dittoSeq
 #
@@ -269,6 +269,7 @@ p4 <- as.data.frame(colData(sce)) %>%
   summarise(N=n()) %>% 
   group_by(cellclass) %>% 
   mutate(frac = N/sum(N)) %>%
+  ungroup() %>% 
   ggplot(aes(x = frac, y = cellclass, fill = time.group)) +
   geom_bar(stat = "identity", position = "stack") +
   scale_fill_manual(values=col.vector) +

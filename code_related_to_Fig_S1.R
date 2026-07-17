@@ -5,7 +5,7 @@
 #
 # Inputs:       Seurat object "GSE337349_StrokeTime.rds"
 #
-# Dependencies: Seurat, edgeR, SingleCellExperiment, scuttle, randomcoloR,
+# Dependencies: pacman, Seurat, edgeR, SingleCellExperiment, scuttle, randomcoloR,
 #               ComplexHeatmap, dittoSeq, ggplotify, patchwork, tidyverse
 #
 # Hardware:     > 48GB free RAM recommended
@@ -45,7 +45,7 @@ obj1 <- FindVariableFeatures(obj1, nfeatures=2000, assay = "RNA")
 
 # subset genes on highly variable genes
 feat.keep <- VariableFeatures(obj1)
-feat.keep <- feat.keep[!grepl("^mt\\-|Ddx3y|Tsix|Xist|Rp[ls]|Hb[ab]\\-",feat.keep)]
+feat.keep <- feat.keep[!grepl("^mt\\-|Ddx3y|Tsix|Xist|Rp[ls]|Hb[ab]\\-", feat.keep)]
 objs <- obj1[feat.keep,]
 
 # only keep clusters with >= 50 cells by study
@@ -55,16 +55,16 @@ cells.keep <- objs@meta.data %>%
   dplyr::filter(n()>=50) %>% 
   pull(rowname)
 objs <- objs[,cells.keep]
-objs@meta.data = droplevels(objs@meta.data)
+objs@meta.data <- droplevels(objs@meta.data)
 table(objs$study.short,objs$cellclass)
 
 # aggregate expression
 bulk.seu <- AggregateExpression(objs, group.by = c("cellclass","study.short"), assays = "RNA", return.seurat = T)
 
 # use edgeR for pseudobulk normalization and conversion into cpm
-y = edgeR::DGEList(counts = bulk.seu[["RNA"]]$counts, samples=bulk.seu@meta.data)
+y <- edgeR::DGEList(counts = bulk.seu[["RNA"]]$counts, samples=bulk.seu@meta.data)
 dim(y)
-group=y$samples$cellclass
+group <- y$samples$cellclass
 keep.exprs <- filterByExpr(y, group = group)
 y <- y[keep.exprs,, keep.lib.sizes=F]
 dim(y)
@@ -75,18 +75,18 @@ y.cpm <- edgeR::cpm(y, log = F)
 dim(y.cpm)
 
 # perform correlation analysis on normalized counts
-cmtx = cor(as.matrix(y.cpm), method = "pearson")
+cmtx <- cor(as.matrix(y.cpm), method = "pearson")
 dim(cmtx)
 
-study_color = randomcoloR::distinctColorPalette(k=21)
-names(study_color) = sort(unique(y$samples$study.short))
-class_color = dittoColors()[1:17]
-names(class_color) = levels(obj1$cellclass)
-annotations = data.frame(class = factor(y$samples$cellclass, levels = unique(y$samples$cellclass)), study = y$samples$study.short)
+study_color <- randomcoloR::distinctColorPalette(k=21)
+names(study_color) <- sort(unique(y$samples$study.short))
+class_color <-  dittoColors()[1:17]
+names(class_color) <- levels(obj1$cellclass)
+annotations <- data.frame(class = factor(y$samples$cellclass, levels = unique(y$samples$cellclass)), study = y$samples$study.short)
 
 ha <- HeatmapAnnotation(df = annotations, col = list(class = class_color, study = study_color))
-col_fun = circlize::colorRamp2(seq(0,1, length = 9),RColorBrewer::brewer.pal(n = 9, name = "YlOrBr"))
-h = Heatmap(
+col_fun <- circlize::colorRamp2(seq(0,1, length = 9),RColorBrewer::brewer.pal(n = 9, name = "YlOrBr"))
+h <- Heatmap(
   cmtx,
   km = 1,
   width = ncol(cmtx)*unit(1, "mm"), 
@@ -100,25 +100,24 @@ h = Heatmap(
   use_raster = F,
   heatmap_legend_param = list(ncol = 1,title = "coeff."))
 
-h = as.ggplot(h) + theme(plot.margin = unit(c(0, 0, 0, 0), "inches"))
+h <- as.ggplot(h) + theme(plot.margin = unit(c(0, 0, 0, 0), "inches"))
 h
 ##### END Supplementary figure 1A #####
 
 
 ##### Supplementary figure 1B, C, D #####
 
-feat = c("nCount_RNA","nFeature_RNA","percent.mt")
-p.lst = list()
+feat <- c("nCount_RNA","nFeature_RNA","percent.mt")
+p.lst <- list()
 for (i in seq_along(feat)) {
-  my.feat = feat[i]
-  df.plot = obj1@meta.data |> dplyr::select(my.feat,cellclass)
+  my.feat <- feat[i]
+  df.plot <- obj1@meta.data |> dplyr::select(my.feat,cellclass)
   p <- ggplot(df.plot, aes_string(x='cellclass', y= my.feat)) +
     geom_violin(aes(fill = cellclass), alpha = 0.8, trim = T, adjust = 1, scale = "width", linewidth = 0.1) +
     guides(fill="none") + guides(color="none") + 
     scale_fill_manual(values=dittoColors()) +
     labs(title = my.feat) +
     scale_colour_manual(values = dittoColors()) +
-    # facet_wrap( ~ time.group, scales ="fixed", ncol=1, strip.position = 'right', dir ='v') +
     theme(
       plot.title = element_text(size = 20, hjust = 0.5, face = "italic"),
       panel.background = element_blank(), 
