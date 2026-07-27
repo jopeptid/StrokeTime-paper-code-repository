@@ -41,7 +41,7 @@ seu.lst <- SplitObject(seu, split.by = 'cellclass')
 seu.lst <- lapply(seu.lst, NormalizeData)
 names(seu.lst)
 
-# load the cell type of interest from the Seurat object list
+# load the cellclass of interest from the Seurat object list
 cellclass_of_interest <- 'BAM'
 # pull Seurat obejct
 obj1 <- seu.lst[[cellclass_of_interest]]

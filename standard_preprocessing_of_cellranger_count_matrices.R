@@ -5,7 +5,7 @@
 # Inputs:       Cellranger raw_feature_bc_matrix.h5 file
 #               Table S1. StrokeTime sample characteristics.xlsx
 #
-# Dependencies: pacman, Seurat, qs2, harmony, singleCellTK, scuttle, data.table, dittoSeq, 
+# Dependencies: pacman, Seurat, harmony, singleCellTK, scuttle, data.table, dittoSeq, 
 #               DoubletFinder, cowplot, patchwork, gridExtra, RColorBrewer, tidyverse, readxl
 #
 # Hardware:     > 16GB free RAM recommended
@@ -245,7 +245,7 @@ table(obj1$DF.classifications)
 # filter out doublets
 obj1 <- subset(obj1, subset = DF.classifications == "Singlet")
 
-qs_save(obj1, paste0(obj1@project.name,".qs"))
+saveRDS(obj1, paste0(obj1@project.name,".rds"))
 ########### END Run DoubletFinder on processed Seurat object #################
 
 
@@ -289,7 +289,7 @@ obj1 <- FindClusters(obj1, resolution = 0.5, random.seed = 1,  verbose = T)
 obj1 <- JoinLayers(obj1)
 
 # save Seurat object
-qs_save(obj1, paste0(obj1@project.name,".qs"))
+saveRDS(obj1, paste0(obj1@project.name,".rds"))
 
 # make plots
 my.col <- dittoColors()
